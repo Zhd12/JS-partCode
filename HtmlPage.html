@@ -1,0 +1,648 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./HomeStyleSheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">  <!-- fontawsome -->
+
+    <title>To Do List</title>
+</head>
+<body>
+
+    <!--<div class="overlay" id="overlay" hidden>
+        <div class="confirm-box">
+            <div onclick="closeConfirmBox()" class="close">&#10006;</div>
+            <h3 class="headerAlert">CONFIRMATION</h3>
+            <p class="questionAlert">Are you sure that clear all tasks?</p>
+            <button class = "styleBtnConfirm styleBtnTrue" onclick="isConfirm(true)">Yes</button>
+            <button class = "styleBtnConfirm styleBtnFalse" onclick="isConfirm(false)">No</button>
+        </div>
+    </div>-->
+
+    <div class="messageError" id="errorDiv">please enter your task</div>
+    <div class="main-container" id="main-div">
+        <div class="container">
+            <h2 class="headerToDo">TO DO LIST</h2>
+
+            <div class="mainForm">
+                Task : <input type="text" id="inputValue" class="inputBox" placeholder="write your task...">
+                <button class="button" onclick="addTask()" id="addButtonID">+</button>
+            </div>
+        </div>
+        <select class="styleSelect" id="selectID" onchange="filter()">
+            <option disabled selected value="filter">Filters</option>
+            <option value="all">all tasks</option>
+            <option value="active">active tasks</option>
+            <option value="completed">completed tasks</option>
+        </select>
+
+        <!-- container all tasks -->
+        <div id="second-div">
+        </div>
+
+        <!--container 3 buttons-->
+        <div id="divContainerID" class="containerBtn">
+            <button class="styleBtn" onclick="clearAllTask()" id="styleClearBtnID">clear all</button>
+            <button class="styleBtn1" onclick="clearActiveTask()" id="clearActiveBtnID">clear active task</button>
+            <button class="styleBtn2" onclick="clearCompleteTask()" id="clearCompleteBtnID">clear complete task</button>
+        </div>
+    </div>
+
+    <script>
+        var listOfTask = [];
+        var listOfActiveTask = []
+        var listOfCompleteTask = [];
+        var inputEl = document.getElementById("inputValue");
+        inputEl.addEventListener("keydown", function (event)
+        {
+            if (event.key === "Enter")
+            {
+                addTask();
+            }
+        });
+
+        var indexID = 0;
+        var indexInput = 0;
+        var elementID = 0;
+
+        function addTask()
+        {   
+            var sel = document.getElementById("selectID");
+            var inputVal = document.getElementById("inputValue").value;
+
+            if (inputVal != "")
+            {
+                sel.style.display = 'block';
+            }
+            else if (listOfTask.length == 0)
+            {
+                sel.style.display = 'none';
+                var btnAllClear = document.getElementById("styleClearBtnID");
+                btnAllClear.style.display = "none";
+            }
+
+            if (inputVal.trim() == "")
+            {
+                var errorBox = document.getElementById('errorDiv');
+                errorBox.style.display = 'block';
+
+                setTimeout(function ()
+                {
+                    errorBox.style.display = 'none';
+                }, 2000);
+            }
+
+            else
+            {
+                listOfTask.push(inputVal);
+                try {
+                    var checkBox = document.createElement('input');
+                    checkBox.classList.add('styleCheckBox');
+
+                    checkBox.setAttribute('id', indexID);
+
+                    checkBox.type = 'checkbox';
+                    checkBox.setAttribute("onchange", "checkTask(event)");
+
+                    var divInput = document.createElement('div');
+                    divInput.setAttribute('id', indexInput);
+                    divInput.appendChild(checkBox);
+
+                    var spnText = document.createElement('span');
+                    spnText.appendChild(document.createTextNode(inputVal));
+                    spnText.setAttribute("id", "textID");
+                    spnText.classList.add('styleText');
+
+                    var divLabel = document.createElement('div');
+                    divLabel.classList.add('containerText');
+                    divLabel.appendChild(spnText);
+
+                    var delIcon = document.createElement('i');
+                    delIcon.classList.add('fas', 'fa-trash-alt', 'styleDelIcon');
+                    delIcon.setAttribute("onclick", "deleteTask(event,listOfTask)");
+
+                    var divIcon = document.createElement('div');
+                    divIcon.appendChild(delIcon);
+                    
+                    var targetElement = document.createElement('div');
+                    targetElement.classList.add('styleEachTask','activeTask');
+                    targetElement.style.display = "flex";
+                    targetElement.setAttribute('id', elementID);
+                    targetElement.appendChild(divInput);
+                    targetElement.appendChild(divLabel);
+                    targetElement.appendChild(divIcon);
+
+                    var secondDiv = document.getElementById('second-div');
+                    secondDiv.appendChild(targetElement);
+
+                    var mainDiv = document.getElementById('main-div');
+                    mainDiv.appendChild(secondDiv);
+
+                    document.getElementById("inputValue").value = '';
+
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "flex";
+                    btnAllClear.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+
+                }
+                catch (error)
+                {
+                    console.log(error.message);
+                }
+                
+                indexID++;
+                indexInput++;
+                elementID++;
+            }
+
+            if (inputVal.trim() !== "")
+            {
+                var items = document.querySelectorAll('.styleEachTask');
+                var item = items[items.length - 1];
+                var hasClassActive = item.classList.contains("activeTask");
+                if (hasClassActive)
+                {
+                    listOfActiveTask.push(inputVal);
+                }
+            }
+        }
+
+        function checkTask(event)
+        {
+            var checkBoxID = event.target.id;
+            var parent = event.target.parentNode;
+            var containerParent = parent.parentNode;
+            
+            var checkBox = document.getElementById(checkBoxID);
+            var inputElement = checkBox.querySelector('.styleCheckBox');
+            var txt = containerParent.querySelector('span');
+            var filterDropDown = document.getElementById("selectID");
+            var selectedValue = filterDropDown.value;
+
+            if (selectedValue == "all" || selectedValue == "filter")
+            {
+                if (inputElement.checked)
+                {
+                    txt.classList.add('strikeThrough');
+                    containerParent.classList.add('completeTask');
+                    containerParent.classList.remove('activeTask');
+
+                    listOfCompleteTask.push(txt.textContent);
+
+                    var removeValue = txt.textContent;
+                    var index = listOfActiveTask.indexOf(removeValue);
+                    if (index !== -1)
+                    {
+                        listOfActiveTask.splice(index, 1);
+                    }
+                }
+                else
+                {
+                    txt.classList.remove('strikeThrough');
+                    containerParent.classList.add('activeTask');
+                    containerParent.classList.remove('completeTask');
+
+                    listOfActiveTask.push(txt.textContent);
+
+
+                    var removeValue = txt.textContent;
+                    var index = listOfCompleteTask.indexOf(removeValue);
+                    if (index !== -1)
+                    {
+                        listOfCompleteTask.splice(index, 1);
+                    }
+                }
+            }
+            else if (selectedValue == "active")
+            {
+                if (inputElement.checked) 
+                {
+                    txt.classList.add('strikeThrough');
+                    containerParent.classList.add('completeTask');
+                    containerParent.classList.remove('activeTask');
+
+                    listOfCompleteTask.push(txt.textContent);
+
+                    var removeValue = txt.textContent;
+                    var index = listOfActiveTask.indexOf(removeValue);
+                    if (index !== -1)
+                    {
+                        listOfActiveTask.splice(index, 1);
+
+                        var btnActiveClear = document.getElementById('clearActiveBtnID');
+                        btnActiveClear.textContent = 'clear active task ' + '(' + listOfActiveTask.length + ')';
+                        containerParent.style.display = "none";
+                    }
+
+                    if (listOfActiveTask.length == 0)
+                    {
+                        var btnAllClear = document.getElementById('styleClearBtnID');
+                        btnAllClear.style.display = "none";
+
+                        var btnActiveClear = document.getElementById('clearActiveBtnID');
+                        btnActiveClear.style.display = "none";
+                    }
+                }
+            }
+            else
+            {
+                txt.classList.remove('strikeThrough');
+                containerParent.classList.add('activeTask');
+                containerParent.classList.remove('completeTask');
+
+                listOfActiveTask.push(txt.textContent);
+
+                var removeValue = txt.textContent;
+                var index = listOfCompleteTask.indexOf(removeValue);
+                if (index !== -1)
+                {
+                    listOfCompleteTask.splice(index, 1);
+
+                    var btnclearComplete = document.getElementById('clearCompleteBtnID');
+                    btnclearComplete.textContent = 'clear complete task ' + '(' + listOfCompleteTask.length + ')';
+                    containerParent.style.display = "none";
+                }
+
+                if (listOfCompleteTask.length == 0)
+                {
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "none";
+
+                    var btnActiveClear = document.getElementById('clearCompleteBtnID');
+                    btnActiveClear.style.display = "none";
+
+                }
+            }
+        }
+
+        function deleteTask(event)
+        {
+            var parentNode = event.target.parentElement;
+            var mainParent = parentNode.parentNode;
+
+            var removeTask = mainParent.textContent;
+            var indexAll = listOfTask.indexOf(removeTask);
+
+            var filterDropDown = document.getElementById("selectID");
+            var selectedValue = filterDropDown.value;
+
+            var hasClassActive = mainParent.classList.contains("activeTask");
+            var hasClassComplete = mainParent.classList.contains("completeTask");
+
+            if (selectedValue == "all" || selectedValue == "filter")
+            {
+                if (indexAll !== -1)
+                {
+                    listOfTask.splice(indexAll, 1);
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "flex";
+                    btnAllClear.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+                }
+
+                if (hasClassActive)
+                {
+                    var indexActive = listOfActiveTask.indexOf(removeTask);
+                    if (indexActive !== -1)
+                    {
+                        listOfActiveTask.splice(indexActive, 1);
+                    }
+                }
+
+                if (hasClassComplete)
+                {
+                    var indexComplete = listOfCompleteTask.indexOf(removeTask);
+                    if (indexComplete !== -1)
+                    {
+                        listOfCompleteTask.splice(indexComplete, 1);
+                    }
+                }
+
+                if (listOfTask.length == 0)
+                {
+                    var clearAllBtn = document.getElementById("styleClearBtnID");
+                    clearAllBtn.style.display = "none";
+
+                    var selectItems = document.getElementById("selectID");
+                    selectItems.style.display = "none";
+
+                }
+            }
+            else if (selectedValue == "active")
+            {
+                if (indexAll !== -1)
+                {
+                    listOfTask.splice(indexAll, 1);
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "flex";
+                    btnAllClear.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+                }
+
+                var indexActive = listOfActiveTask.indexOf(removeTask);
+                if (indexActive !== -1)
+                {
+                    listOfActiveTask.splice(indexActive, 1);
+                    var btnActiveClear = document.getElementById('clearActiveBtnID');
+                    btnActiveClear.style.display = "flex";
+                    btnActiveClear.textContent = 'clear active task ' + '(' + listOfActiveTask.length + ')';
+                }
+
+                if (listOfActiveTask.length == 0)
+                {
+                    var clearAllBtn = document.getElementById("styleClearBtnID");
+                    clearAllBtn.style.display = "none";
+
+                    var clearActiveBtn  = document.getElementById('clearActiveBtnID');
+                    clearActiveBtn.style.display = "none";
+
+                }
+
+                if (listOfTask.length == 0)
+                {
+                    var selectItems = document.getElementById("selectID");
+                    selectItems.style.display = "none";
+
+                    var inVal = document.getElementById('inputValue');
+                    var btnAddTask = document.getElementById('addButtonID');
+                    inVal.disabled = false;
+                    btnAddTask.disabled = false;
+
+                    selectItems.selectedIndex = "0";
+
+                }
+            }
+
+            else if (selectedValue == "completed")
+            {
+
+                if (indexAll !== -1)
+                {
+                    listOfTask.splice(indexAll, 1);
+
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "flex";
+                    btnAllClear.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+                }
+
+                var indexComplete = listOfCompleteTask.indexOf(removeTask);
+                if (indexComplete !== -1)
+                {
+                    listOfCompleteTask.splice(indexComplete, 1);
+
+                    var btnCompleteClear = document.getElementById('clearCompleteBtnID');
+                    btnCompleteClear.style.display = "flex";
+                    btnCompleteClear.textContent = 'clear complete task ' + '(' + listOfCompleteTask.length + ')';
+                }
+
+                if (listOfCompleteTask.length == 0)
+                {
+                    var clearAllBtn = document.getElementById("styleClearBtnID");
+                    clearAllBtn.style.display = "none";
+
+                    var clearCompleteBtn = document.getElementById('clearCompleteBtnID');
+                    clearCompleteBtn.style.display = "none";
+                }
+                if (listOfTask.length == 0)
+                {
+                    var selectItems = document.getElementById("selectID");
+                    selectItems.style.display = "none";
+
+                    var inVal = document.getElementById('inputValue');
+                    var btnAddTask = document.getElementById('addButtonID');
+                    inVal.disabled = false;
+                    btnAddTask.disabled = false;
+
+                    selectItems.selectedIndex = "0";
+                }
+            }
+            mainParent.remove();
+        }
+
+        function filter()
+        {
+
+            var filterDropDown = document.getElementById("selectID");
+            var selectedValue = filterDropDown.value;
+
+            var allTaskConainer = document.getElementById('second-div');
+            var allItem = allTaskConainer.querySelectorAll('.styleEachTask');
+
+            var btnClearActiveTask = document.getElementById('clearActiveBtnID');
+            var btnClearCompleteTask = document.getElementById('clearCompleteBtnID');
+            var btnClearAllTask = document.getElementById('styleClearBtnID');
+
+            var inVal = document.getElementById('inputValue');
+            var btnAddTask = document.getElementById('addButtonID');
+
+            for (var i = 0; i < allItem.length; i++)
+            {
+                var item = allItem[i];
+                    var hasClassActive = item.classList.contains("activeTask");
+                    var hasClassComplete = item.classList.contains("completeTask");
+
+                    if (selectedValue == "all" || selectedValue == "filter")
+                    {
+                        item.style.display = "flex";
+
+                        btnClearAllTask.style.display = "flex";
+                        btnClearAllTask.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+                        btnClearActiveTask.style.display = "none";
+                        btnClearCompleteTask.style.display = "none";
+                        inVal.disabled = false;
+                        btnAddTask.disabled = false;
+
+                        console.log(listOfActiveTask);
+
+                    }
+                    else if (selectedValue == "active")
+                    {
+                            if (hasClassActive)
+                            {
+                                item.style.display = "flex";
+                            }
+                            else
+                            {
+                                item.style.display = "none";
+                            }
+                            btnClearAllTask.style.display = "flex";
+                            btnClearActiveTask.style.display = "flex";
+                            btnClearActiveTask.textContent = 'clear active task ' + '(' + listOfActiveTask.length + ')';
+                            btnClearCompleteTask.style.display = "none";
+                            
+                            inVal.disabled = true;
+                            btnAddTask.disabled = true;
+                    }
+                    else{
+                            if (hasClassComplete)
+                            {
+                                item.style.display = "flex";
+                            }
+                            else
+                            {
+                                item.style.display = "none";
+                            }
+
+                            btnClearAllTask.style.display = "flex";
+                            btnClearActiveTask.style.display = "none";
+                            btnClearCompleteTask.style.display = "flex";
+                            btnClearCompleteTask.textContent = 'clear complete task ' + '(' + listOfCompleteTask.length + ')';  /////////////////////////////
+
+                            inVal.disabled = true;
+                            btnAddTask.disabled = true;
+                         }
+            }
+        }
+
+        //function closeConfirmBox()
+        //{
+        //    document.getElementById("overlay").hidden = true;
+        //}
+
+        function clearAllTask()
+        {
+            //var confirmBox = document.getElementById("overlay").hidden = false;
+
+            if (confirmBox == "true")
+            {
+                var allTask = document.getElementById("second-div");
+                var childElements = allTask.querySelectorAll("div");
+
+                for (var i = 0; i < childElements.length; i++) {
+                    var currentChild = childElements[i];
+                    if (currentChild.classList.contains("styleEachTask")) {
+                        allTask.removeChild(currentChild);
+                    }
+                }
+                listOfTask = [];
+                listOfActiveTask = [];
+                listOfCompleteTask = [];
+
+                var btnClearAll = document.querySelector(".styleBtn");
+                btnClearAll.style.display = "none";
+
+                var select = document.getElementById("selectID");
+                select.style.display = "none";
+                select.selectedIndex = "0";
+
+                var btnClearActive = document.getElementById("clearActiveBtnID");
+                btnClearActive.style.display = "none";
+
+                var btnClearComplete = document.getElementById("clearCompleteBtnID");
+                btnClearComplete.style.display = "none";
+
+                var inpVal = document.getElementById('inputValue');
+                inpVal.disabled = false;
+
+                var butnAddTask = document.getElementById('addButtonID');
+                butnAddTask.disabled = false;
+            }
+        }
+
+        function clearActiveTask()
+        {
+            var parentDiv = document.getElementById('second-div');
+            var childElements = parentDiv.querySelectorAll('.styleEachTask');
+
+            for (let i = childElements.length - 1; i >= 0; i--)
+            {
+                var childElement = childElements[i];
+                var children = childElement.children;
+                var txt = children[1].textContent;
+                var indexAll = listOfTask.indexOf(txt);
+                var indexAct = listOfActiveTask.indexOf(txt);
+
+                if (indexAll !== -1 && childElement.style.display === 'flex')
+                {
+                    listOfTask.splice(indexAll, 1);
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "none";
+                    btnAllClear.textContent = 'clear all ' + '(' + listOfTask.length + ')';
+
+                    listOfActiveTask.splice(indexAct, 1);
+                    var btnAllClear = document.getElementById('clearActiveBtnID');
+                    btnAllClear.style.display = "none";
+
+                    childElement.remove();
+                   
+                }
+            }
+
+            var btnClearActive = document.getElementById("clearActiveBtnID");
+            btnClearActive.style.display = "none";
+
+            var inpVal = document.getElementById('inputValue');
+            var butnAddTask = document.getElementById('addButtonID');
+            inpVal.disabled = true;
+            butnAddTask.disabled = true;
+
+            //var allTaskCon = document.getElementById('second-div');
+            //var items = allTaskCon.querySelectorAll('.styleEachTask');
+            var selectItems = document.getElementById('selectID');
+
+            if (childElements.length == 0)
+            {
+                selectItems.style.display = "none";
+                inpVal.disabled = false;
+                butnAddTask.disabled = false;
+                selectItems.selectedIndex = "0";
+            }
+            else
+            {
+                selectItems.style.display = "flex";
+            }
+        }
+
+        function clearCompleteTask()
+        {
+            var parentDiv = document.getElementById('second-div');
+            var childElements = parentDiv.getElementsByClassName('styleEachTask');
+
+            for (let i = childElements.length - 1; i >= 0; i--)
+            {
+                const childElement = childElements[i];
+                var children = childElement.children;
+                var txt = children[1].textContent;
+                var indexAll = listOfTask.indexOf(txt);
+                var indexCom = listOfCompleteTask.indexOf(txt);
+
+                if (indexAll !== -1 && childElement.style.display === 'flex')
+                {
+                    listOfTask.splice(indexAll, 1);
+                    var btnAllClear = document.getElementById('styleClearBtnID');
+                    btnAllClear.style.display = "none";
+
+                    listOfCompleteTask.splice(indexCom, 1);
+                    var btnComClear = document.getElementById('clearCompleteBtnID');
+                    btnComClear.style.display = "none";
+                    childElement.remove();
+                }
+            }
+
+            var btnClearComplete = document.getElementById("clearCompleteBtnID");
+            btnClearComplete.style.display = "none";
+
+            var inpVal = document.getElementById('inputValue');
+            var butnAddTask = document.getElementById('addButtonID');
+            inpVal.disabled = true;
+            butnAddTask.disabled = true;
+
+            //var allTaskCon = document.getElementById('second-div');
+            //var items = allTaskCon.querySelectorAll('.styleEachTask');
+            var selectItems = document.getElementById('selectID');
+
+            if (childElements.length == 0)
+            {
+                selectItems.style.display = "none";
+                inpVal.disabled = false;
+                butnAddTask.disabled = false;
+                selectItems.selectedIndex = "0";
+            }
+            else
+            {
+                selectItems.style.display = "flex";
+            }
+        }
+    </script>
+</body>
+</html>

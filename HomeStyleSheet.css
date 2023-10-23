@@ -1,0 +1,312 @@
+﻿:root {
+    --textColor: rgb(12, 12, 151);
+    --bgColor: aliceblue;
+    --primaryFont: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --primarySize: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    border-style: none;
+    background-color: var(--bgColor);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.confirm-box {
+    width: 20%;
+    height: 21%;
+    position: absolute;
+    top: 35%;
+    left: 40%;
+    text-align: center;
+    background: white;
+    border-radius:10px;
+}
+
+.headerAlert, .questionAlert {
+    background-color: white;
+}
+
+.headerAlert{
+   font-family:'Comic Book Commando';
+   font-size: 25px;
+   padding-top:30px;
+   padding-bottom:25px;
+   letter-spacing:3px;
+   border-radius:10px;
+}
+
+.questionAlert {
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+    
+}
+
+.close {
+    background-color: white;
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    padding: 15px;
+    border-radius:10px;
+}
+
+.styleBtnConfirm {
+    padding:5px 40px 5px 40px;
+    border-radius:5px;
+    margin-top:13px;
+    cursor:pointer;
+}
+
+.styleBtnTrue {
+    border:1px solid red;
+    background-color:red;
+    color:white;
+}
+
+.styleBtnFalse {
+    border:1px solid red;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    /*position: absolute;*/
+    margin: 10px;
+    box-shadow: inset 0px 0px 20px 2px rgba(64, 129, 204, 0.244);
+    border-radius: 10px;
+    width: min-content;
+    margin: 35px;
+}
+
+.headerToDo {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: rgb(187, 226, 242);
+    border: 2px solid rgba(112, 157, 216, 0.338);
+    box-shadow: inset 0px 0px 10px 5px rgba(64, 129, 204, 0.316);
+    color: var(--textColor);
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    width: 500px;
+    padding: 30px;
+    margin: 25px;
+}
+
+.mainForm {
+    margin: 50px 25px 25px 25px;
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inputBox {
+    width: 400px;
+    height: 20px;
+    border: 1px solid rgba(129, 129, 129, 0.332);
+    border-radius: 5px;
+    outline: none;
+    padding: 8px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: var(--primarySize);
+}
+
+.button {
+    background-color: rgb(12, 12, 151);
+    color: white;
+    padding: 5px 20px 7px 20px;
+    font-size: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.containerBtn {
+    display:flex;
+    flex-direction:column;
+}
+
+.styleBtn {
+    color: var(--textColor);
+    padding: 5px 20px 7px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 530px;
+    display: none;
+}
+.styleBtn1 {
+    color: var(--textColor);
+    padding: 5px 20px 7px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 470px;
+    display: none;
+}
+.styleBtn2 {
+    color: var(--textColor);
+    padding: 5px 20px 7px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 450px;
+    display: none;
+}
+.styleSelect {
+    background-color: #9cd1f8a6;
+    border: 2px solid #7797ee73;
+    border-radius: 5px;
+    outline: none;
+    padding: 8px;
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+    position: relative;
+    left: 215px;
+    display: none;
+    /* Replace default styling arrow */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns = "http://www.w3.org/2000/svg" width="100" height="50"><polygon points="0,0 100,0 50,50" style="fill:%23666666;"/></svg>');
+    background-position: right 10px top 50%;
+    background-repeat: no-repeat;
+    background-size: 10px;
+    padding-right: 50px;
+}
+
+.styleSelect:focus,.styleSelect:hover{
+    outline:none;
+    border: 2px solid #7797eebc; 
+}
+
+.styleSelect option{
+    background:#eefafe;
+}
+
+
+.styleEachTask 
+{
+    display: flex;
+    flex-direction:row;
+    align-items:center;
+    width: 570px;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: inset 0px 0px 10px 5px rgba(64, 129, 204, 0.316);
+    border-radius: 6px;
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+}
+
+.styleTxtCount, .changePosTxtActive, .changePosTxtComplete {
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+}
+.changePosTxtActive, .changePosTxtComplete{
+    padding:5px 15px 5px 15px;
+}
+
+#second-div{
+    display:flex;
+    flex-direction:column-reverse;
+}
+
+.styleCheckBox {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.styleText{
+    display:flex;
+    flex-direction:row;
+    flex-wrap:wrap;
+    align-items:center;
+}
+.containerText{
+    width:500px;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    white-space:pre-wrap;
+}
+
+.styleDelIcon {
+    cursor: pointer;
+    margin-left:10px;
+}
+
+.styleDelIcon:hover {
+    color: red;
+}
+
+.strikeThrough {
+    text-decoration: line-through;
+}
+.messageError {
+    border: 2px solid rgba(255, 0, 0, 0.19);
+    width: 200px;
+    height: 30px;
+    text-align: center;
+    /* Sets the position to fixed */
+    position: fixed;
+    /* Positions the element at the top 5% and horizontally centered */
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    background-color: red;
+    color: white;
+    font-family: var(--primaryFont);
+    font-size: var(--primarySize);
+    /* Initially hides the element */
+    display: none;
+    animation: fadeInAnimation 1s ease 2s forwards,fadeOutAnimation 3s ease 0s forwards;
+}
+
+
+.messageError::before {
+    content: "××× ";
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutAnimation {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* @media(min-width : 1000px){
+    
+} */
